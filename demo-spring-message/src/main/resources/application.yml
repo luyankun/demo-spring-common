@@ -1,0 +1,37 @@
+rabbit:
+  product:
+    host: 39.96.85.178
+    port: 5672
+    username: shengong
+    password: DYapp123qwe
+    virtualHost: /
+    exchange: mq-product-exchange
+    queue: mq-product-queue
+    pattern:
+      routing:
+        one: product.req.one
+        two: product.req.two
+  custom:
+    host: 39.96.85.178
+    port: 5672
+    username: shengong
+    password: DYapp123qwe
+    virtualHost: /
+    exchange: mq-custom-exchange
+    queue: mq-custom-queue
+    pattern:
+      routing:
+        one: custom.req.one
+        two: custom.req.two
+  case:
+    host: 39.96.85.178
+    port: 5672
+    username: shengong
+    password: DYapp123qwe
+    virtualHost: /
+    exchange: mq-case-exchange
+    queue: mq-case-queue
+    pattern:
+      routing:
+        one: case.req.one
+        two: case.req.two

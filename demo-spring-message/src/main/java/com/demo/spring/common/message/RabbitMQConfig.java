@@ -1,16 +1,14 @@
 package com.demo.spring.common.message;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.amqp.support.converter.SimpleMessageConverter;
-import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
 
 @Slf4j
 public class RabbitMQConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnCallback {
@@ -18,6 +16,8 @@ public class RabbitMQConfig implements RabbitTemplate.ConfirmCallback, RabbitTem
     protected ConnectionFactory connectionFactory(String host, int port, String username,
             String password, String virtualHost) {
         log.info("创建RabbitMQ连接工厂...");
+        log.info("host:{}, port:{}, username:{}, password:{}, virtualHost:{}",
+                host, port, username, password, virtualHost);
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setHost(host);
         connectionFactory.setPort(port);
@@ -40,24 +40,31 @@ public class RabbitMQConfig implements RabbitTemplate.ConfirmCallback, RabbitTem
         return rabbitTemplate;
     }
 
-    protected RabbitListenerContainerFactory rabbitListenerContainerFactory(
-            SimpleRabbitListenerContainerFactoryConfigurer configurer,
-            ConnectionFactory connectionFactory){
+    protected SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory){
         log.info("创建rabbitListenerContainerFactory...");
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
+        listenerContainerFactory.setConnectionFactory(connectionFactory);
         listenerContainerFactory.setMessageConverter(new SimpleMessageConverter());
-        configurer.configure(listenerContainerFactory, connectionFactory);
         return listenerContainerFactory;
+    }
+
+    protected RabbitAdmin registryRoutes(RabbitAdmin rabbitAdmin, Queue queue, Exchange exchange, String... routingKeys){
+        for (String routingKey : routingKeys) {
+            Binding productToCustomerRequest = BindingBuilder.bind(queue).to(exchange)
+                    .with(routingKey).noargs();
+            rabbitAdmin.declareBinding(productToCustomerRequest);
+        }
+        return rabbitAdmin;
     }
 
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
-
     }
 
     @Override
     public void returnedMessage(Message message, int replyCode, String replyText,
             String exchange, String routingKey) {
-
+        log.info("message:{}, replyCode:{}, replyText:{}, exchange:{}, routingKey:{}",
+                message, replyCode, replyText, exchange, routingKey);
     }
 }
