@@ -16,7 +16,7 @@ public class RabbitMQSendMessage {
         XML;
     }
 
-    public <T> void sendMessage(RabbitTemplate rabbitTemplate, String exchange, String routingKey, T sendMessage, ConvertType convertType){
+    public <T> void sendMessage(RabbitTemplate rabbitTemplate, String exchange, String routingKey, T sendMessage, ConvertType convertType) {
         String message;
         switch (convertType) {
             case XML:

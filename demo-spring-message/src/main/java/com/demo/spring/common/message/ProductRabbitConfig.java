@@ -66,15 +66,17 @@ public class ProductRabbitConfig extends RabbitMQConfig {
 
     /**
      * 创建exchange
+     *
      * @return
      */
     @Bean(value = "productTopicExchange")
-    public TopicExchange productTopicExchange(){
+    public TopicExchange productTopicExchange() {
         return new TopicExchange(productTopicExchange);
     }
 
     /**
      * 创建queue
+     *
      * @return
      */
     @Bean(value = "productQueue")
@@ -87,7 +89,7 @@ public class ProductRabbitConfig extends RabbitMQConfig {
             @Qualifier(value = "productRabbitAdmin") RabbitAdmin rabbitAdmin,
             @Qualifier(value = "productQueue") Queue queue,
             @Qualifier(value = "productTopicExchange") Exchange exchange) {
-        String[] routingKeys = new String[] {
+        String[] routingKeys = new String[]{
                 productReqOne,
                 productReqTwo
         };

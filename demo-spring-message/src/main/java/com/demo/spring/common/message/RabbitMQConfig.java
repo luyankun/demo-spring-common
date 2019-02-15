@@ -1,7 +1,11 @@
 package com.demo.spring.common.message;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -63,7 +67,7 @@ public class RabbitMQConfig implements RabbitTemplate.ConfirmCallback, RabbitTem
 
     @Override
     public void returnedMessage(Message message, int replyCode, String replyText,
-            String exchange, String routingKey) {
+                                String exchange, String routingKey) {
         log.info("message:{}, replyCode:{}, replyText:{}, exchange:{}, routingKey:{}",
                 message, replyCode, replyText, exchange, routingKey);
     }
