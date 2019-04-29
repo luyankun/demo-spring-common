@@ -14,6 +14,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.amqp.support.converter.SimpleMessageConverter;
 
+import java.util.concurrent.Executor;
+
 @Slf4j
 public class RabbitMQConfig implements RabbitTemplate.ConfirmCallback, RabbitTemplate.ReturnCallback {
 
@@ -44,14 +46,25 @@ public class RabbitMQConfig implements RabbitTemplate.ConfirmCallback, RabbitTem
         return rabbitTemplate;
     }
 
-    protected SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory){
+    protected SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+            ConnectionFactory connectionFactory, Executor taskExecutor){
         log.info("创建rabbitListenerContainerFactory...");
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(connectionFactory);
+        if (taskExecutor != null)
+            listenerContainerFactory.setTaskExecutor(taskExecutor);
         listenerContainerFactory.setMessageConverter(new SimpleMessageConverter());
         return listenerContainerFactory;
     }
 
+    /**
+     * 注册routingKey
+     * @param rabbitAdmin
+     * @param queue
+     * @param exchange
+     * @param routingKeys
+     * @return
+     */
     protected RabbitAdmin registryRoutes(RabbitAdmin rabbitAdmin, Queue queue, Exchange exchange, String... routingKeys){
         for (String routingKey : routingKeys) {
             Binding productToCustomerRequest = BindingBuilder.bind(queue).to(exchange)

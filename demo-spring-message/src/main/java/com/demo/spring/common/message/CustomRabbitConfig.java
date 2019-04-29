@@ -1,5 +1,6 @@
 package com.demo.spring.common.message;
 
+import com.demo.spring.common.utils.ThreadPool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.Queue;
@@ -12,6 +13,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
 @EnableRabbit
@@ -55,12 +59,21 @@ public class CustomRabbitConfig extends RabbitMQConfig {
         return super.rabbitTemplate(connectionFactory);
     }
 
-    @Lazy
+    @Bean(value = "threadPoolExecutor")
+    public Executor threadPoolExecutor() {
+        log.info("创建线程池...");
+        ThreadPoolExecutor executor = ThreadPool.init().getThreadPoolExecutor();
+        System.out.println(executor.getActiveCount());
+        return executor;
+    }
+
+//    @Lazy
     @Bean(value = "customRabbitListenerContainerFactory")
     @Override
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
-            @Qualifier(value = "customConnectionFactory") ConnectionFactory connectionFactory) {
-        return super.rabbitListenerContainerFactory(connectionFactory);
+            @Qualifier(value = "customConnectionFactory") ConnectionFactory connectionFactory,
+            @Qualifier(value = "threadPoolExecutor") Executor threadPoolExecutor) {
+        return super.rabbitListenerContainerFactory(connectionFactory, threadPoolExecutor);
     }
 
     /**

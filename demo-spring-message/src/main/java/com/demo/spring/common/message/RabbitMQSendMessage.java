@@ -1,5 +1,6 @@
 package com.demo.spring.common.message;
 
+import com.alibaba.fastjson.JSON;
 import com.demo.spring.common.utils.XStreamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -23,8 +24,8 @@ public class RabbitMQSendMessage {
                 break;
             case JSON:
             default:
-//                message = JsonMapper.toJsonString(sendMessage);
-                message = null;
+                message = JSON.toJSONString(sendMessage);
+//                message = null;
                 break;
         }
         log.info("exchange:{}, routingKey:{}, message:{}", exchange, routingKey, message);

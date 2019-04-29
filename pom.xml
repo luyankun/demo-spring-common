@@ -20,6 +20,7 @@
         <module>demo-spring-persistence</module>
         <module>demo-spring-utils</module>
         <module>demo-spring-web</module>
+        <module>demo-spring-exception</module>
     </modules>
 
     <parent>
@@ -63,4 +64,26 @@
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <url>http://retail-maven.sm0071515.com/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>release</id>
+            <url>http://retail-maven.sm0071515.com/nexus/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
+    <repositories>
+        <repository>
+            <id>public</id>
+            <url>http://retail-maven.sm0071515.com/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
 </project>

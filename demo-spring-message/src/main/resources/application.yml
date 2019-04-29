@@ -1,8 +1,8 @@
 rabbit:
   product:
-    host: 39.96.85.178
+    host: 39.96.64.224
     port: 5672
-    username: shengong
+    username: admin
     password: DYapp123qwe
     virtualHost: /
     exchange: mq-product-exchange
@@ -12,9 +12,9 @@ rabbit:
         one: product.req.one
         two: product.req.two
   custom:
-    host: 39.96.85.178
+    host: 39.96.64.224
     port: 5672
-    username: shengong
+    username: admin
     password: DYapp123qwe
     virtualHost: /
     exchange: mq-custom-exchange
@@ -35,3 +35,7 @@ rabbit:
       routing:
         one: case.req.one
         two: case.req.two
+#spring:
+#  datasource:
+#    type: org.apache.tomcat.jdbc.pool.DataSource
+#    driver-class-name: com.mysql.jdbc.Driver
